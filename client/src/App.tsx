@@ -46,7 +46,7 @@ function App() {
                     setSelectedDate={setSelectedDate}
                     setClaimedDatesInApp={updateClaimedDates}
                 />
-
+                {!selectedDate && <><p>Ideally pick a day so that the cats are visited at least every second day.</p></>}
                 {selectedDate && (
                     <>
                         {isDateClaimed(selectedDate) ? (
@@ -59,10 +59,13 @@ function App() {
                                             dateOptions
                                         )}
                                     </strong>{" "}
-                                    has already been claimed by <strong>{whoClaimedDate}</strong>
-                                    .
+                                    has already been claimed by{" "}
+                                    <strong>{whoClaimedDate}</strong>.
                                 </p>
-                                <p>If that's you, thank you! If you need to cancel, text Andriy</p>
+                                <p>
+                                    If that's you, thank you! If you need to
+                                    cancel, text Andriy
+                                </p>
                                 <p className="text-red-600 mt-2">
                                     Please pick a different date.
                                 </p>
