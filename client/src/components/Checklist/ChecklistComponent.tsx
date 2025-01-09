@@ -7,6 +7,7 @@ interface ChecklistItem {
 
 const defaultChecklist: ChecklistItem[] = [
   { label: "Feed cats one wet food each", checked: false },
+  { label: "If they finish wet food quick, give another", checked: false },
   { label: "Top up dry food", checked: false },
   { label: "Clean litterbox", checked: false },
   { label: "Water plants", checked: false },
