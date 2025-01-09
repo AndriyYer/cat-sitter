@@ -17,8 +17,6 @@ app.use(express.json());
 
 app.get("/", async (req, res) => {
     res.send("Hello from cat-sitter server");
-    const sitter = await getTomorrowsCatSitters();
-    console.log("+1" + sitter.phone);
 });
 
 cron.schedule(
