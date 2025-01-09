@@ -20,7 +20,7 @@ app.get("/", async (req, res) => {
 });
 
 cron.schedule(
-    "* * * * *",
+    "0 9 * * *",
     async () => {
         console.log("[CRON] 9am job started");
 
