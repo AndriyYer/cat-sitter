@@ -1,39 +1,37 @@
 import { useState, useEffect } from "react";
 import { ref, onValue } from "firebase/database";
 import { db } from "../services/firebaseService";
-
-interface BookingData {
-  confirmed: boolean;
-  name: string;
-  phone: string;
-  status: string;
-}
-
-interface BookingMap {
-  [date: string]: BookingData;
-}
+import { BookingData, BookingMap } from "../types/types";
+import { formatDateKey } from "../utils/dates";
 
 export const useClaimedDates = () => {
   const [claimedDates, setClaimedDates] = useState<string[]>([]);
   const [bookingMap, setBookingMap] = useState<BookingMap>({});
   const [selectedBooking, setSelectedBooking] = useState<BookingData | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const calendarRef = ref(db, "calendar");
-    const unsubscribe = onValue(calendarRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        const allDates = Object.keys(data);
-        const claimed = allDates.filter((key) => data[key].status === "claimed");
-        setClaimedDates(claimed);
-        setBookingMap(data);
-      } else {
-        setClaimedDates([]);
-        setBookingMap({});
-      }
-    });
+    try {
+      const calendarRef = ref(db, "calendar");
+      const unsubscribe = onValue(calendarRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const allDates = Object.keys(data);
+          const claimed = allDates.filter((key) => data[key].status === "claimed");
+          setClaimedDates(claimed);
+          setBookingMap(data);
+        } else {
+          setClaimedDates([]);
+          setBookingMap({});
+        }
+      }, (error) => {
+        setError(error);
+      });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Unknown error occurred'));
+    }
   }, []);
 
   const updateClaimedDates = (dates: string[]) => {
@@ -41,18 +39,14 @@ export const useClaimedDates = () => {
   };
 
   const isDateClaimed = (date: Date) => {
-    const dateKey = date.toISOString().split("T")[0];
+    const dateKey = formatDateKey(date);
     return claimedDates.includes(dateKey);
   };
 
   const fetchBookingDetails = (date: Date) => {
-    const dateKey = date.toISOString().split("T")[0];
+    const dateKey = formatDateKey(date);
     const booking = bookingMap[dateKey];
-    if (booking) {
-      setSelectedBooking(booking);
-    } else {
-      setSelectedBooking(null);
-    }
+    setSelectedBooking(booking || null);
   };
 
   return {
@@ -62,5 +56,6 @@ export const useClaimedDates = () => {
     updateClaimedDates,
     isDateClaimed,
     fetchBookingDetails,
+    error,
   };
 };
