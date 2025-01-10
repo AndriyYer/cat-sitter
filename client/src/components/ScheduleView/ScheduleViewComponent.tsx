@@ -52,7 +52,7 @@ const ScheduleView: React.FC = () => {
                 {/* Next Upcoming Booking Legend */}
                 <div className="flex items-center">
                     <span className="inline-block w-4 h-4 bg-green-100 border border-green-800 mr-2"></span>
-                    <span className="text-sm text-gray-700">Next Upcoming</span>
+                    <span className="text-sm text-gray-700">Upcoming</span>
                 </div>
             </div>
 

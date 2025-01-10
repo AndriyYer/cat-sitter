@@ -64,7 +64,7 @@ function App() {
                     The Mizu and Binki Calendar
                 </h1>
                 <p className="text-lg text-gray-600 mb-8">
-                    View all bookings below
+                    View all cat sittings below
                 </p>
 
                 <div className="mb-4">
