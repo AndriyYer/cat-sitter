@@ -1,47 +1,66 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { ref, onValue } from "firebase/database";
 import { db } from "../services/firebaseService";
-import { onValue, ref } from "firebase/database";
 
-export function useClaimedDates() {
+interface BookingData {
+  confirmed: boolean;
+  name: string;
+  phone: string;
+  status: string;
+}
+
+interface BookingMap {
+  [date: string]: BookingData;
+}
+
+export const useClaimedDates = () => {
   const [claimedDates, setClaimedDates] = useState<string[]>([]);
-  const [whoClaimedDate, setWhoClaimedDate] = useState<string>("");
+  const [bookingMap, setBookingMap] = useState<BookingMap>({});
+  const [selectedBooking, setSelectedBooking] = useState<BookingData | null>(null);
 
-  // This function updates the list of all claimed date keys
-  function updateClaimedDates(dates: string[]) {
+  useEffect(() => {
+    const calendarRef = ref(db, "calendar");
+    const unsubscribe = onValue(calendarRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const allDates = Object.keys(data);
+        const claimed = allDates.filter((key) => data[key].status === "claimed");
+        setClaimedDates(claimed);
+        setBookingMap(data);
+      } else {
+        setClaimedDates([]);
+        setBookingMap({});
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const updateClaimedDates = (dates: string[]) => {
     setClaimedDates(dates);
-  }
+  };
 
-  // A helper to check if a given date is claimed
-  function isDateClaimed(date: Date | null) {
-    if (!date) return false;
+  const isDateClaimed = (date: Date) => {
     const dateKey = date.toISOString().split("T")[0];
     return claimedDates.includes(dateKey);
-  }
+  };
 
-  // A function to fetch the "whoClaimedDate" from Firebase when needed
-  function fetchWhoClaimedDate(date: Date | null) {
-    if (!date) {
-      setWhoClaimedDate("");
-      return;
-    }
-
+  const fetchBookingDetails = (date: Date) => {
     const dateKey = date.toISOString().split("T")[0];
-    if (isDateClaimed(date)) {
-      const dayRef = ref(db, `calendar/${dateKey}`);
-      onValue(dayRef, (snapshot) => {
-        const data = snapshot.val();
-        setWhoClaimedDate(data?.name ?? "someone mysterious");
-      });
+    const booking = bookingMap[dateKey];
+    if (booking) {
+      setSelectedBooking(booking);
     } else {
-      setWhoClaimedDate("");
+      setSelectedBooking(null);
     }
-  }
+  };
 
   return {
     claimedDates,
-    whoClaimedDate,
+    bookingMap,
+    selectedBooking,
     updateClaimedDates,
     isDateClaimed,
-    fetchWhoClaimedDate
+    fetchBookingDetails,
   };
-}
+};
