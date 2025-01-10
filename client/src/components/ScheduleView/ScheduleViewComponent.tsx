@@ -37,20 +37,20 @@ const ScheduleView: React.FC = () => {
 
   return (
     <div className="w-full max-w-3xl bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Booking Schedule</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">Schedule</h2>
 
       {/* Legend */}
       <div className="flex space-x-6 mb-4">
         {/* Past Bookings Legend */}
         <div className="flex items-center">
           <span className="inline-block w-4 h-4 bg-gray-100 border border-gray-500 mr-2"></span>
-          <span className="text-sm text-gray-700">Past Bookings</span>
+          <span className="text-sm text-gray-700">Past</span>
         </div>
 
         {/* Next Upcoming Booking Legend */}
         <div className="flex items-center">
           <span className="inline-block w-4 h-4 bg-green-100 border border-green-800 mr-2"></span>
-          <span className="text-sm text-gray-700">Next Upcoming Booking</span>
+          <span className="text-sm text-gray-700">Next Upcoming</span>
         </div>
       </div>
 
