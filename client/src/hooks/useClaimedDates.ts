@@ -9,11 +9,13 @@ export const useClaimedDates = () => {
   const [bookingMap, setBookingMap] = useState<BookingMap>({});
   const [selectedBooking, setSelectedBooking] = useState<BookingData | null>(null);
   const [error, setError] = useState<Error | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     try {
       const calendarRef = ref(db, "calendar");
       const unsubscribe = onValue(calendarRef, (snapshot) => {
+        setIsLoading(false);
         const data = snapshot.val();
         if (data) {
           const allDates = Object.keys(data);
@@ -26,11 +28,13 @@ export const useClaimedDates = () => {
         }
       }, (error) => {
         setError(error);
+        setIsLoading(false);
       });
 
       return () => unsubscribe();
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Unknown error occurred'));
+      setIsLoading(false);
     }
   }, []);
 
@@ -57,5 +61,6 @@ export const useClaimedDates = () => {
     isDateClaimed,
     fetchBookingDetails,
     error,
+    isLoading
   };
 };
