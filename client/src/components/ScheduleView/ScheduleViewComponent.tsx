@@ -1,5 +1,3 @@
-// src/components/ScheduleView/ScheduleView.tsx
-
 import React, { useEffect, useState } from "react";
 import { useClaimedDates } from "../../hooks/useClaimedDates";
 import classNames from "classnames";
@@ -32,7 +30,12 @@ const ScheduleView: React.FC = () => {
 
   // Find the index of the next upcoming booking
   const nextBookingIndex = bookings.findIndex(
-    (booking) => new Date(booking.date) >= today
+    (booking) => {
+      const [year, month, day] = booking.date.split('-').map(Number);
+      const bookingDate = new Date(year, month - 1, day);
+      bookingDate.setHours(0, 0, 0, 0);
+      return bookingDate >= today;
+    }
   );
 
   return (
@@ -68,7 +71,8 @@ const ScheduleView: React.FC = () => {
         </thead>
         <tbody className="divide-y divide-gray-100">
           {bookings.map((booking, idx) => {
-            const bookingDate = new Date(booking.date);
+            const [year, month, day] = booking.date.split('-').map(Number);
+            const bookingDate = new Date(year, month - 1, day);
             bookingDate.setHours(0, 0, 0, 0); // Normalize to midnight
             let rowClass = "";
 
