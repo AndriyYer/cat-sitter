@@ -1,4 +1,4 @@
-# Mizu and Binki Calendar 🐾📅
+# Mizu and Binki Calendar 🐾
 
 **Mizu and Binki Calendar** is a fun side project built in a day to help my family manage cat-sitting days. It includes an interactive React frontend and a simple Express server that sends friendly SMS reminders using Twilio. All bookings are stored in Firebase Realtime Database, ensuring everything stays up-to-date in real-time.
 
@@ -72,5 +72,3 @@
 This project is open-source and available under the [MIT License](LICENSE).
 
 ---
-
-*Just a little project to keep our cat-sitting organized and ensure our furry friends are always looked after! 🐱💖*
